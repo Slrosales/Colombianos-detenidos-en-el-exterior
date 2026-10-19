@@ -1,0 +1,14 @@
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.5
+matplotlib>=3.8
+seaborn>=0.13
+plotly>=5.20
+folium>=0.16
+geopandas>=0.14
+imbalanced-learn>=0.12
+kmodes>=0.12
+umap-learn>=0.5
+prince>=0.12
+jupyterlab>=4.0
+nbconvert>=7.0

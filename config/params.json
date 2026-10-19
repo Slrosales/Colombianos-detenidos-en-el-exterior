@@ -1,0 +1,8 @@
+{
+  "source_url": "https://www.datos.gov.co/api/views/e97j-vuf7/rows.csv?accessType=DOWNLOAD",
+  "raw_file": "data/raw/colombianos_detenidos.csv",
+  "train_date": "2025-11-01",
+  "test_date": "2026-10-09",
+  "report_cutoff": "2026-10-09",
+  "top_n": 10
+}
