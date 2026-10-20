@@ -1,0 +1,17 @@
+.git
+.venv
+venv
+node_modules
+apps/web/node_modules
+apps/web/.next
+apps/web/.env*.local
+__pycache__
+*.pyc
+.pytest_cache
+data/raw
+data/processed
+outputs
+artifacts
+paper
+reports
+notebooks

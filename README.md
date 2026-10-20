@@ -4,13 +4,37 @@ Análisis de los datos públicos de **Colombianos detenidos en el exterior** pub
 Cancillería colombiana en [datos.gov.co](https://www.datos.gov.co/Estad-sticas-Nacionales/Colombianos-detenidos-en-el-exterior/e97j-vuf7).
 
 El proyecto combina un análisis exploratorio, mapas, aprendizaje no supervisado y un modelo
-ordinal para estimar la situación jurídica de las personas detenidas. El corte de datos usado
+ordinal para explorar la situación jurídica de las personas detenidas. El corte de datos usado
 en la actualización de 2026 es **2026-10-09** (última fecha de publicación disponible al momento
 de la descarga).
 
 El artículo de investigación independiente está en `paper/paper_2026.tex` y
 `paper/paper_2026.pdf`, con formato IJCAI-11, citas numéricas estilo IEEE y referencias en
 `paper/references.bib`. El informe de trabajo previo se conserva en `reports/Informe_actualizado_2026.pdf`.
+
+## Sitio web interactivo (2026)
+
+El repositorio incluye un explorador web en construcción:
+
+- **Frontend:** Next.js + TypeScript, mapas con MapLibre GL y gráficos con ECharts.
+- **Backend:** FastAPI + DuckDB, consultas en vivo sobre un Parquet limpio.
+- **Datos:** `pipeline/build_warehouse.py` aplica la lógica de `src/cleaning.py` y añade
+  ISO3, coordenadas y un manifiesto de procedencia.
+- **Despliegue previsto:** Vercel para `apps/web` y Fly.io/Render para `apps/api`.
+
+El sitio prioriza el **análisis exploratorio**. El modelo ordinal se conserva como página
+metodológica y laboratorio de aprendizaje, no como predictor público: su QWK ≈ 0,39 no permite
+evaluar a una persona. La documentación técnica y el TODO por módulo están en
+[`docs/`](docs/README.md).
+
+```bash
+make install          # dependencias Python
+make install-web      # dependencias del frontend
+make download         # descarga el corte más reciente
+make warehouse        # genera data/processed/detentions.parquet
+make api              # FastAPI en http://localhost:8000/docs
+make web              # Next.js en http://localhost:3000
+```
 
 ## Autoría
 
@@ -45,13 +69,21 @@ detenidos queda sin país identificado.
 ├── README.md
 ├── Makefile
 ├── requirements.txt
+├── requirements-dev.txt
+├── docs/                         # Arquitectura, contrato de datos, modelo y roadmap
 ├── config/
 │   ├── consulado_a_pais.json
 │   └── params.json
 ├── data/
 │   ├── external/                 # Países, coordenadas y shapefile
 │   ├── raw/                      # Descarga original (ignorada por git)
-│   └── processed/                # Archivos generados (ignorados por git)
+│   └── processed/                # Parquet + manifiesto (ignorados por git)
+├── pipeline/                     # Construcción del warehouse para la API
+│   ├── build_warehouse.py
+│   └── tests/
+├── apps/
+│   ├── api/                      # FastAPI + DuckDB
+│   └── web/                      # Next.js + MapLibre + ECharts
 ├── notebooks/                    # Notebooks originales, preservados
 │   ├── Colombianos_detenidos_en_el_exterior.ipynb
 │   ├── ML_Colombianos_detenidos.ipynb
@@ -69,12 +101,13 @@ detenidos queda sin país identificado.
 │   └── references.bib
 ├── scripts/
 │   └── download_data.py
-├── src/
+├── src/                          # Limpieza y análisis reutilizable (2026)
 │   ├── cleaning.py
 │   └── analysis.py
 ├── tests/
 │   ├── test_cleaning.py
 │   └── test_model.py
+├── artifacts/                    # Modelos serializados (ignorados por git)
 └── outputs/
     ├── figures/
     ├── models/
@@ -131,41 +164,63 @@ gravedad del delito.
 
 ## Cómo ejecutar
 
-Requisitos: Python 3.10+ y, para generar los PDF, Pandoc y LaTeX (pdflatex).
+Requisitos: Python 3.10+, Node 20+ y pnpm. Para generar los PDF, Pandoc y LaTeX (pdflatex).
+
+### Análisis y web
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+# 1. Instalar dependencias
+make install          # Python (.venv, análisis + API + tests)
+make install-web      # Node/Next.js
 
-# 1. Descargar el corte más reciente
+# 2. Descargar el corte más reciente
 make download
 
-# 2. Regenerar tablas, figuras y métricas
+# 3. Generar tablas, figuras y métricas de investigación
 make analysis
 
-# 3. Ejecutar pruebas (unittest de la biblioteca estándar; no se requiere pytest)
-make test
+# 4. Construir el warehouse consultable
+make warehouse
 
-# 4. Generar el informe de trabajo
-make report
+# 5. Levantar backend y frontend en dos terminales
+make api              # http://localhost:8000/docs
+make web              # http://localhost:3000
+```
 
-# 5. Compilar el artículo de investigación en LaTeX (incluye BibTeX)
-make paper
+Pruebas:
+
+```bash
+make test             # tests de limpieza, modelo, pipeline y API
+make test-web         # typecheck de TypeScript
+make build-web        # build de producción
+```
+
+### Investigación y PDF
+
+```bash
+make report           # informe de trabajo
+make paper            # artículo LaTeX + BibTeX
 ```
 
 También se puede usar un archivo ya descargado:
 
 ```bash
-python src/analysis.py --input data/raw/colombianos_detenidos.csv
+.venv/bin/python src/analysis.py --input data/raw/colombianos_detenidos.csv
 ```
 
-La descarga se guarda en `data/raw/` y está ignorada por git. Si se descarga un corte posterior,
-actualiza `report_cutoff`, `train_date` y `test_date` en `config/params.json` antes de regenerar
-las tablas.
+La descarga se guarda en `data/raw/` y está ignorada por git. El Parquet y el manifiesto se
+generan en `data/processed/`, también ignorados. Si se descarga un corte posterior, actualiza
+`report_cutoff`, `train_date` y `test_date` en `config/params.json` antes de regenerar las tablas.
 
 Los notebooks de `notebooks/` se ejecutan desde esa carpeta y usan rutas relativas a
-`../data/external/` y `../data/processed/`.
+`../data/external/` y `../data/processed/`. La lógica reutilizable vive en `src/`; el sitio no
+importa notebooks.
+
+### Variables de entorno
+
+Copia `.env.example` para la API (CORS, ruta del Parquet) y `apps/web/.env.example` para el
+frontend (`NEXT_PUBLIC_API_URL`). En desarrollo, los valores por defecto apuntan a
+`http://localhost:3000` y `http://localhost:8000`.
 
 ## Limitaciones
 
@@ -188,6 +243,9 @@ Los notebooks de `notebooks/` se ejecutan desde esa carpeta y usan rutas relativ
 - `reports/Presentación.pdf` — presentación original.
 - `outputs/tables/` — tablas reproducibles del análisis.
 - `outputs/figures/` — figuras del informe actualizado.
+- `apps/web/` — explorador interactivo (Next.js + MapLibre).
+- `apps/api/` — API de consultas en vivo (FastAPI + DuckDB).
+- `docs/` — arquitectura, contrato de datos, decisiones y TODO por módulo.
 
 ## Fuente y cita
 

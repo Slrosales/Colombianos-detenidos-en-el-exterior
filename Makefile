@@ -1,15 +1,60 @@
 PYTHON ?= python3
+VENV ?= .venv
+PY = $(VENV)/bin/python
+PIP = $(VENV)/bin/pip
+API_PORT ?= 8000
 
-.PHONY: download analysis test report paper clean
+.PHONY: install install-web download warehouse analysis test test-api test-web api web build-web report paper clean help
+
+help:
+	@echo "Targets:"
+	@echo "  install        Create .venv and install Python dependencies"
+	@echo "  install-web    Install the Next.js frontend dependencies"
+	@echo "  download       Download the latest raw CSV"
+	@echo "  warehouse      Build data/processed/detentions.parquet + manifest"
+	@echo "  analysis       Regenerate tables, figures and model metrics"
+	@echo "  test           Run all Python tests"
+	@echo "  api            Run FastAPI on port $(API_PORT)"
+	@echo "  web            Run Next.js on port 3000"
+	@echo "  build-web      Production build of the frontend"
+	@echo "  report         Build the working report PDF"
+	@echo "  paper          Build the LaTeX paper"
+	@echo "  clean          Remove generated data and outputs"
+
+install:
+	$(PYTHON) -m venv $(VENV)
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements-dev.txt
+
+install-web:
+	cd apps/web && pnpm install
 
 download:
-	$(PYTHON) scripts/download_data.py
+	$(PY) scripts/download_data.py
+
+warehouse:
+	$(PY) pipeline/build_warehouse.py
 
 analysis:
-	$(PYTHON) src/analysis.py --input data/raw/colombianos_detenidos.csv
+	$(PY) src/analysis.py --input data/raw/colombianos_detenidos.csv
 
 test:
-	$(PYTHON) -m unittest discover -s tests -v
+	$(PY) -m pytest tests pipeline/tests apps/api/tests -q
+
+test-api:
+	$(PY) -m pytest apps/api/tests -q
+
+test-web:
+	cd apps/web && pnpm typecheck
+
+api:
+	$(VENV)/bin/uvicorn apps.api.app.main:app --reload --port $(API_PORT)
+
+web:
+	cd apps/web && pnpm dev
+
+build-web:
+	cd apps/web && pnpm build
 
 report:
 	cd reports && pandoc informe_actualizado_2026.md \
