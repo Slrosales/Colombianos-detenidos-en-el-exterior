@@ -23,3 +23,12 @@ outputs/models/*
 *.toc
 *.bbl
 *.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bcf
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.xdv

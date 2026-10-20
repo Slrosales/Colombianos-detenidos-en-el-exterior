@@ -21,10 +21,10 @@ report:
 		--resource-path=.:../outputs/figures
 
 paper:
-	cd reports && pdflatex -interaction=nonstopmode -halt-on-error paper_2026.tex
-	cd reports && bibtex paper_2026
-	cd reports && pdflatex -interaction=nonstopmode -halt-on-error paper_2026.tex
-	cd reports && pdflatex -interaction=nonstopmode -halt-on-error paper_2026.tex
+	cd paper && pdflatex -interaction=nonstopmode -halt-on-error paper_2026.tex
+	cd paper && bibtex paper_2026
+	cd paper && pdflatex -interaction=nonstopmode -halt-on-error paper_2026.tex
+	cd paper && pdflatex -interaction=nonstopmode -halt-on-error paper_2026.tex
 
 clean:
 	rm -rf data/processed/* outputs/tables/* outputs/figures/* outputs/models/*

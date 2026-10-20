@@ -8,10 +8,9 @@ ordinal para estimar la situación jurídica de las personas detenidas. El corte
 en la actualización de 2026 es **2026-10-09** (última fecha de publicación disponible al momento
 de la descarga).
 
-El artículo de investigación independiente está en `reports/paper_2026.tex` y
-`reports/paper_2026.pdf`, con formato IJCAI-11, citas numéricas estilo IEEE y referencias en
-`reports/references.bib`. El
-informe de trabajo previo se conserva en `reports/Informe_actualizado_2026.pdf`.
+El artículo de investigación independiente está en `paper/paper_2026.tex` y
+`paper/paper_2026.pdf`, con formato IJCAI-11, citas numéricas estilo IEEE y referencias en
+`paper/references.bib`. El informe de trabajo previo se conserva en `reports/Informe_actualizado_2026.pdf`.
 
 ## Autoría
 
@@ -61,7 +60,9 @@ detenidos queda sin país identificado.
 │   ├── Informe del análisis exploratorio.pdf   # original 2021
 │   ├── Presentación.pdf                         # original
 │   ├── informe_actualizado_2026.md
-│   ├── Informe_actualizado_2026.pdf
+│   └── Informe_actualizado_2026.pdf
+├── paper/                        # Artículo LaTeX independiente
+│   ├── README.md
 │   ├── paper_2026.tex
 │   ├── paper_2026.pdf
 │   ├── ijcai11.sty
@@ -177,9 +178,9 @@ Los notebooks de `notebooks/` se ejecutan desde esa carpeta y usan rutas relativ
 
 ## Entregables
 
-- `reports/paper_2026.pdf` — artículo de investigación en formato IJCAI-11 a dos columnas, con citas numéricas.
-- `reports/paper_2026.tex` — fuente LaTeX editable del artículo.
-- `reports/references.bib` — referencias BibTeX del artículo.
+- `paper/paper_2026.pdf` — artículo de investigación en formato IJCAI-11 a dos columnas, con citas numéricas.
+- `paper/paper_2026.tex` — fuente LaTeX editable del artículo.
+- `paper/references.bib` — referencias BibTeX del artículo.
 - `reports/ijcai11.sty` — estilo de conferencia usado por el artículo.
 - `reports/Informe_actualizado_2026.pdf` — informe de trabajo con el corte de 2026.
 - `reports/informe_actualizado_2026.md` — fuente editable del informe.
