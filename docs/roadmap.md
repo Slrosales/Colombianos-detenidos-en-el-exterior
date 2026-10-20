@@ -2,7 +2,15 @@
 
 The project is built in steps. Each step must be independently runnable and committed.
 
-## Phase 0 — Foundation (this commit)
+```mermaid
+flowchart LR
+    P0["Phase 0<br/>foundation"] --> P1["Phase 1<br/>explore polish"]
+    P1 --> P2["Phase 2<br/>deploy + data updates"]
+    P2 --> P3["Phase 3<br/>research content"]
+    P3 --> P4["Phase 4<br/>model lab"]
+```
+
+## Phase 0 — Foundation
 
 - [x] Document architecture, data contract, research decisions and model lab.
 - [x] Add `apps/`, `pipeline/` and `docs/` boundaries.
@@ -11,6 +19,8 @@ The project is built in steps. Each step must be independently runnable and comm
 - [x] Next.js dashboard with MapLibre choropleth and live filters.
 - [x] Methodology page and model metrics page.
 - [x] Make targets, environment examples and tests.
+- [x] Beginner lessons in `lessons/` with Mermaid diagrams.
+- [x] Harden `.gitignore` for Python, Node, data, secrets and build outputs.
 
 ## Phase 1 — Explore v1 polish
 

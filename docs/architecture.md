@@ -13,28 +13,77 @@ Publish an informative, interactive site about Colombians detained abroad, using
 
 ## Data flow
 
-```text
-datos.gov.co CSV
-      |
-      v
-src/cleaning.py              normalize encoding, labels, duplicates and country
-      |
-      v
-pipeline/build_warehouse.py  add ISO3, coordinates, manifest and Parquet
-      |
-      +---------------------------+
-      |                           |
-      v                           v
-data/processed/               apps/web/public/data/
-detentions.parquet            countries.geojson
-      |
-      v
-apps/api (FastAPI + DuckDB)  <----- live HTTP queries ----- apps/web (Next.js)
+```mermaid
+flowchart LR
+    SRC["datos.gov.co<br/>raw CSV"] --> CLEAN["src/cleaning.py<br/>encoding, labels, duplicates, country"]
+    CLEAN --> BUILD["pipeline/build_warehouse.py<br/>ISO3, coordinates, manifest"]
+    BUILD --> PARQUET[("data/processed/<br/>detentions.parquet")]
+    BUILD --> GEO["apps/web/public/data/<br/>countries.geojson"]
+    PARQUET --> API["apps/api<br/>FastAPI + DuckDB"]
+    GEO --> WEB["apps/web<br/>Next.js + MapLibre"]
+    API -- "JSON / HTTP" --> WEB
+    API -. "phase 4" .-> MODEL["model lab<br/>server-side inference"]
 ```
 
-The raw CSV and the parquet file are not committed. The geo asset and the source code are
+The raw CSV and the Parquet file are not committed. The geo asset and the source code are
 committed. In production, a scheduled job downloads the newest cutoff, rebuilds the
 warehouse, validates it and triggers a backend/frontend deploy.
+
+## Runtime topology
+
+```mermaid
+flowchart TB
+    subgraph Browser["User browser"]
+        NEXT["Next.js app<br/>static + client components"]
+        MAP["MapLibre canvas"]
+        CHARTS["ECharts canvas"]
+        NEXT --> MAP
+        NEXT --> CHARTS
+    end
+    subgraph Edge["Vercel"]
+        CDN["CDN + preview/production builds"]
+    end
+    subgraph APIHost["Fly.io / Render / Railway"]
+        FAST["FastAPI"]
+        DUCK["DuckDB"]
+        FILE[("detentions.parquet")]
+        FAST --> DUCK --> FILE
+    end
+    Browser -- "HTTPS JSON" --> FAST
+    CDN --> Browser
+```
+
+## Query lifecycle
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant W as Next.js
+    participant A as FastAPI
+    participant D as DuckDB
+    participant P as Parquet
+
+    U->>W: choose cutoff / filter
+    W->>A: GET /api/countries?cutoff=...&delito=...
+    A->>A: validate cutoff + whitelist filters
+    A->>D: parameterized SQL
+    D->>P: read_parquet
+    P-->>D: rows
+    D-->>A: aggregated rows
+    A-->>W: JSON
+    W-->>U: map + charts update
+```
+
+## Repository boundaries
+
+```mermaid
+flowchart LR
+    SRC["src/<br/>cleaning + analysis"] --> PIPE["pipeline/<br/>warehouse build"]
+    SRC --> API["apps/api/<br/>FastAPI"]
+    PIPE --> API
+    API --> WEB["apps/web/<br/>Next.js"]
+    NOTE["notebooks/ + paper/<br/>research only"] -. "no runtime import" .-> WEB
+```
 
 ## Why a backend at all?
 

@@ -8,16 +8,20 @@ apps/web/
 │   ├── methodology/      stock vs flow, consulate recovery, limitations
 │   └── model/            research metrics and model lab placeholder
 ├── components/
-│   ├── ExploreDashboard.tsx
-│   ├── WorldMap.tsx
-│   ├── BarPanel.tsx
-│   ├── TrendPanel.tsx
-│   ├── ComparePanel.tsx
-│   ├── Filters.tsx
-│   └── StatCard.tsx
+│   ├── ExploreDashboard.tsx  owns cutoff, filters and selected country
+│   ├── FilterBar.tsx         cutoff + categorical controls
+│   ├── WorldMap.tsx          MapLibre choropleth
+│   ├── Chart.tsx             ECharts lifecycle wrapper
+│   ├── BarPanel.tsx          horizontal bars
+│   ├── TrendPanel.tsx        stock at the last cutoff of each year
+│   ├── ComparePanel.tsx      2021 vs 2026 diverging chart
+│   ├── CountryPanel.tsx      country profile
+│   ├── StatCard.tsx          headline indicators
+│   └── ModelPanel.tsx        metrics and limitations
 ├── lib/
-│   ├── api.ts            typed API client
-│   └── format.ts         numbers and percentages in es-CO
+│   ├── api.ts                typed API client
+│   ├── format.ts             numbers and percentages in es-CO
+│   └── model-reference.ts    static fallback metrics
 ├── public/data/countries.geojson
 └── package.json
 ```
@@ -33,17 +37,38 @@ apps/web/
 
 ## Data flow
 
-```text
-ExploreDashboard
-  ├── useFilters (cutoff + categorical filters + selected country)
-  ├── /api/meta          -> cutoff badge and quality indicators
-  ├── /api/countries     -> MapLibre choropleth + top countries
-  ├── /api/breakdown/*   -> crime/age/gender/situation bars
-  ├── /api/trend         -> stock at the last cutoff of each year
-  └── /api/compare       -> 2021 vs 2026 diverging chart
+```mermaid
+flowchart LR
+    STATE["ExploreDashboard<br/>cutoff + filters + selected"] --> META["/api/meta"]
+    STATE --> COUNTRY["/api/countries"]
+    STATE --> BREAK["/api/breakdown/{dimension}"]
+    STATE --> TREND["/api/trend"]
+    STATE --> COMPARE["/api/compare"]
+    STATE --> FILTERS["/api/filters"]
+    COUNTRY --> MAP["WorldMap"]
+    BREAK --> BARS["BarPanel / CountryPanel"]
+    TREND --> LINE["TrendPanel"]
+    COMPARE --> DIV["ComparePanel"]
+    META --> STATS["StatCard + cutoff badge"]
+    FILTERS --> CONTROLS["FilterBar"]
 ```
 
 The client is deliberately thin. It does not compute stock semantics; the API does.
+
+## Component state flow
+
+```mermaid
+stateDiagram-v2
+    [*] --> LoadingMeta
+    LoadingMeta --> Ready: /api/meta
+    Ready --> Fetching: cutoff or filter changes
+    Fetching --> Ready: JSON received
+    Ready --> CountrySelected: map click
+    CountrySelected --> Fetching: breakdowns + trend
+    CountrySelected --> Ready: clear selection
+    LoadingMeta --> Error: API unavailable
+    Fetching --> Error: request failed
+```
 
 ## Map
 
@@ -57,8 +82,8 @@ The client is deliberately thin. It does not compute stock semantics; the API do
 
 ```bash
 cd apps/web
-npm install
-NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
+pnpm install
+NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev
 ```
 
 Open <http://localhost:3000>.

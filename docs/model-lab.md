@@ -24,17 +24,36 @@ probabilities. The browser never receives a binary artifact.
 
 Planned flow:
 
-```text
-POST /api/model/predict
-      |
-      v
-Pydantic validation (allowed categories)
-      |
-      v
-OrdinalLogisticRegression.predict_proba()
-      |
-      v
-{ probabilidades, version, advertencia }
+```mermaid
+sequenceDiagram
+    participant W as Web
+    participant A as FastAPI
+    participant V as Pydantic
+    participant E as OneHotEncoder
+    participant M as Ordinal model
+
+    W->>A: POST /api/model/predict
+    A->>V: validate allowed categories
+    V-->>A: typed features
+    A->>E: transform(features)
+    E-->>A: one-hot vector
+    A->>M: predict_proba(vector)
+    M-->>A: [P(investigación), P(juicio), P(condenado)]
+    A-->>W: probabilities + version + advertencia
+```
+
+Training and serving are separate jobs:
+
+```mermaid
+flowchart LR
+    PARQUET[("detentions.parquet")] --> TRAIN["pipeline/train_model.py"]
+    TRAIN --> MODEL["ordinal_logistic.joblib"]
+    TRAIN --> ENC["encoder.joblib"]
+    TRAIN --> META["model_metadata.json"]
+    MODEL --> API["FastAPI startup"]
+    ENC --> API
+    META --> API
+    API --> ENDPOINT["POST /api/model/predict"]
 ```
 
 ## Training artifact

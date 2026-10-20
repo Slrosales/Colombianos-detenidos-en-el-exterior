@@ -1,5 +1,8 @@
 node_modules/
 .next/
 out/
+.turbo/
+.vercel/
 *.tsbuildinfo
 .env*.local
+pnpm-debug.log*

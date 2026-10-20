@@ -25,7 +25,8 @@ El repositorio incluye un explorador web en construcción:
 El sitio prioriza el **análisis exploratorio**. El modelo ordinal se conserva como página
 metodológica y laboratorio de aprendizaje, no como predictor público: su QWK ≈ 0,39 no permite
 evaluar a una persona. La documentación técnica y el TODO por módulo están en
-[`docs/`](docs/README.md).
+[`docs/`](docs/README.md). Si eres nuevo en estas tecnologías, empieza por
+[`lessons/`](lessons/README.md): lecciones explicadas desde cero, con diagramas Mermaid y ejercicios.
 
 ```bash
 make install          # dependencias Python
@@ -71,6 +72,7 @@ detenidos queda sin país identificado.
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── docs/                         # Arquitectura, contrato de datos, modelo y roadmap
+├── lessons/                      # Lecciones para aprender el stack desde cero
 ├── config/
 │   ├── consulado_a_pais.json
 │   └── params.json

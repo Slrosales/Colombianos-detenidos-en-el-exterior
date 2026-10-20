@@ -15,6 +15,30 @@ apps/api/
 └── Dockerfile
 ```
 
+## Request lifecycle
+
+```mermaid
+sequenceDiagram
+    participant W as Web
+    participant F as FastAPI
+    participant P as Pydantic
+    participant R as Router
+    participant D as DuckDB
+    participant Fs as Parquet
+
+    W->>F: GET /api/countries?cutoff=2026-10-09
+    F->>P: validate query params
+    P-->>F: typed values or 422
+    F->>R: call route function
+    R->>R: resolve cutoff + whitelist filters
+    R->>D: parameterized SQL
+    D->>Fs: read_parquet
+    Fs-->>D: rows
+    D-->>R: aggregates
+    R-->>F: dict rows
+    F-->>W: JSON + response model
+```
+
 ## Design
 
 - The API is read-only. It opens one DuckDB in-memory connection and registers a view over

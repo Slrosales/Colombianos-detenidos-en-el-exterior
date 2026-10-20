@@ -14,7 +14,14 @@ Start here:
 | [`research-2026.md`](research-2026.md) | The 2026 methodological decisions that the site must preserve |
 | [`model-lab.md`](model-lab.md) | Why ML is not a public predictor and how the server-side lab should work |
 | [`roadmap.md`](roadmap.md) | Phased TODO for every module |
+| [`../lessons/README.md`](../lessons/README.md) | Beginner-friendly lessons for the whole stack |
 | [`decisions/0001-stack.md`](decisions/0001-stack.md) | Architecture decision record for the initial stack |
+
+## Learning path
+
+Start with [`../lessons/README.md`](../lessons/README.md) if you are new to Python,
+React, APIs, maps or deployment. Each lesson points to the real files and includes small
+exercises. Technical reference pages are below.
 
 ## Module ownership
 
@@ -25,6 +32,7 @@ apps/api/         live-query HTTP API (FastAPI + DuckDB)
 apps/web/         public Next.js site (MapLibre + ECharts)
 data/             raw downloads, processed warehouse, static geo assets
 artifacts/        model binaries and exported research artifacts
+lessons/          beginner tutorials for the stack
 notebooks/        research provenance; not imported by production code
 reports/          human-readable research reports
 paper/            LaTeX paper
