@@ -9,8 +9,9 @@ en la actualización de 2026 es **2026-10-09** (última fecha de publicación di
 de la descarga).
 
 El artículo de investigación independiente está en `reports/paper_2026.tex` y
-`reports/paper_2026.pdf`. El informe de trabajo previo se conserva en
-`reports/Informe_actualizado_2026.pdf`.
+`reports/paper_2026.pdf`, con formato IJCAI-11, citas numéricas estilo IEEE y referencias en
+`reports/references.bib`. El
+informe de trabajo previo se conserva en `reports/Informe_actualizado_2026.pdf`.
 
 ## Autoría
 
@@ -62,7 +63,9 @@ detenidos queda sin país identificado.
 │   ├── informe_actualizado_2026.md
 │   ├── Informe_actualizado_2026.pdf
 │   ├── paper_2026.tex
-│   └── paper_2026.pdf
+│   ├── paper_2026.pdf
+│   ├── ijcai11.sty
+│   └── references.bib
 ├── scripts/
 │   └── download_data.py
 ├── src/
@@ -146,7 +149,7 @@ make test
 # 4. Generar el informe de trabajo
 make report
 
-# 5. Compilar el artículo de investigación en LaTeX
+# 5. Compilar el artículo de investigación en LaTeX (incluye BibTeX)
 make paper
 ```
 
@@ -174,8 +177,10 @@ Los notebooks de `notebooks/` se ejecutan desde esa carpeta y usan rutas relativ
 
 ## Entregables
 
-- `reports/paper_2026.pdf` — artículo de investigación en formato IEEE-like a dos columnas.
+- `reports/paper_2026.pdf` — artículo de investigación en formato IJCAI-11 a dos columnas, con citas numéricas.
 - `reports/paper_2026.tex` — fuente LaTeX editable del artículo.
+- `reports/references.bib` — referencias BibTeX del artículo.
+- `reports/ijcai11.sty` — estilo de conferencia usado por el artículo.
 - `reports/Informe_actualizado_2026.pdf` — informe de trabajo con el corte de 2026.
 - `reports/informe_actualizado_2026.md` — fuente editable del informe.
 - `reports/Informe del análisis exploratorio.pdf` — informe original de 2021.
