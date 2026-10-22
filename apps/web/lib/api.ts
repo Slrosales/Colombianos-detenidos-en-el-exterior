@@ -1,3 +1,5 @@
+import { staticApi } from "./static-api";
+
 export const API_BASE = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 ).replace(/\/$/, "");
@@ -31,6 +33,9 @@ export type Meta = {
   cutoffs: string[];
   source_sha256?: string;
   generated_at?: string;
+  demo?: boolean;
+  modo?: string;
+  demo_nota?: string;
 };
 
 export type CountryRow = {
@@ -115,7 +120,7 @@ async function getJson<T>(
   return (await response.json()) as T;
 }
 
-export const api = {
+const httpApi = {
   meta: () => getJson<Meta>("/api/meta"),
   filters: (cutoff: string) =>
     getJson<FiltersResponse>("/api/filters", { cutoff }),
@@ -141,3 +146,7 @@ export const api = {
     getJson<CompareRow[]>("/api/compare", { base, target, limit: 250 }),
   modelMetrics: () => getJson<ModelMetrics>("/api/model/metrics"),
 };
+
+export const STATIC_DEMO = process.env.NEXT_PUBLIC_STATIC_DEMO === "true";
+
+export const api = STATIC_DEMO ? staticApi : httpApi;

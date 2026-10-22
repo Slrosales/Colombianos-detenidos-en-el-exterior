@@ -17,6 +17,48 @@ flowchart LR
     USER["User"] --> VERCEL
 ```
 
+## Free static demo (no backend)
+
+This is the recommended option while Fly.io is not free. It keeps the same frontend and the
+same data contract, but replaces HTTP queries with precomputed JSON.
+
+```mermaid
+flowchart LR
+    PIPE["pipeline/export_web_data.py"] --> JSON["apps/web/public/data/demo/*.json"]
+    JSON --> BUILD["Next.js build"]
+    BUILD --> VERCEL["Vercel static hosting<br/>free"]
+```
+
+Generate and deploy:
+
+```bash
+make web-data
+cd apps/web
+pnpm build
+```
+
+On Vercel:
+
+1. Keep the root directory as `apps/web`.
+2. Set `NEXT_PUBLIC_STATIC_DEMO=true`.
+3. Deploy. No API, database or volume is needed.
+
+The demo includes the last cutoff of each year, the 2021-05-01 base, the map, country
+profiles, trends, the data-quality panel and the 2021→2026 comparison. Cross-filters by crime,
+age, gender and legal situation are disabled because they would require precomputing every
+combination. The UI shows a banner explaining this.
+
+The generated JSON is committed so Vercel can build without the raw CSV. Regenerate it with
+`make web-data` after a new warehouse. The files are small (~0.7 MB for all cutoffs).
+
+### Moving to the live API later
+
+1. Deploy the API (Fly.io or another host).
+2. Put the warehouse on the API volume.
+3. Set `NEXT_PUBLIC_STATIC_DEMO=false`.
+4. Set `NEXT_PUBLIC_API_URL=https://your-api-domain`.
+5. Redeploy. The frontend code does not change.
+
 ## Components
 
 | Component | Host | What it needs |

@@ -11,6 +11,7 @@ type FilterBarProps = {
   onChange: (filters: Filters) => void;
   onCutoffChange: (cutoff: string) => void;
   onReset: () => void;
+  disabled?: boolean;
 };
 
 type FilterKey = Exclude<Dimension, "pais" | "consulado">;
@@ -30,6 +31,7 @@ export function FilterBar({
   onChange,
   onCutoffChange,
   onReset,
+  disabled = false,
 }: FilterBarProps) {
   return (
     <section className="toolbar" aria-label="Filtros del tablero">
@@ -56,6 +58,12 @@ export function FilterBar({
             <select
               id={`filter-${key}`}
               value={filters[key] ?? ""}
+              disabled={disabled}
+              title={
+                disabled
+                  ? "Los filtros combinados requieren la API en vivo"
+                  : undefined
+              }
               onChange={(event) =>
                 onChange({ ...filters, [key]: event.target.value || undefined })
               }

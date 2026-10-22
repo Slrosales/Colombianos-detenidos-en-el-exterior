@@ -1,0 +1,42 @@
+{
+  "train_date": "2025-11-01",
+  "test_date": "2026-10-09",
+  "target_order": [
+    "EN INVESTIGACIÓN",
+    "EN JUICIO",
+    "CONDENADO"
+  ],
+  "models": [
+    {
+      "modelo": "Regresión logística ordinal",
+      "accuracy": 0.6473,
+      "balanced_accuracy": 0.5395,
+      "macro_f1": 0.5531,
+      "qwk": 0.3934,
+      "kappa": 0.375,
+      "mae_ordinal": 0.6168,
+      "n_train_filas": 5638.0,
+      "n_test_filas": 6084.0,
+      "peso_train": 26243.0,
+      "peso_test": 27177.0,
+      "fecha_train": "2025-11-01",
+      "fecha_test": "2026-10-09"
+    },
+    {
+      "modelo": "Random Forest",
+      "accuracy": 0.6165,
+      "balanced_accuracy": 0.634,
+      "macro_f1": 0.5761,
+      "qwk": 0.3937,
+      "kappa": 0.3808,
+      "mae_ordinal": 0.6036,
+      "n_train_filas": 5638.0,
+      "n_test_filas": 6084.0,
+      "peso_train": 26243.0,
+      "peso_test": 27177.0,
+      "fecha_train": "2025-11-01",
+      "fecha_test": "2026-10-09"
+    }
+  ],
+  "advertencia": "Resultados de validación temporal con QWK ≈ 0,39. El modelo describe asociaciones y no permite evaluar el riesgo de una persona."
+}

@@ -37,7 +37,8 @@ flowchart LR
 - [x] GitHub Action: monthly download, warehouse build, manifest validation.
 - [x] CI workflow for unit/API tests, typecheck and Playwright (see [`testing.md`](testing.md)).
 - [ ] Deploy API to Fly.io or Render with Docker (requires account; config is in `fly.toml`).
-- [ ] Deploy web to Vercel with `NEXT_PUBLIC_API_URL` (requires account).
+- [x] Free static demo export + adapter (`make web-data`, `NEXT_PUBLIC_STATIC_DEMO`).
+- [ ] Deploy web to Vercel as a static demo or connected to the live API (requires account).
 - [x] Add `/api/health` uptime check and deploy hook support.
 - [x] Cache API responses with `ETag` keyed by dataset checksum.
 - [x] Document rollback to a previous warehouse version (see [`deployment.md`](deployment.md)).

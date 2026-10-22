@@ -53,6 +53,22 @@ flowchart TB
     CDN --> Browser
 ```
 
+## Static demo mode
+
+The same frontend can run without the API for a free deployment:
+
+```mermaid
+flowchart LR
+    PARQUET[("detentions.parquet")] --> EXPORT["pipeline/export_web_data.py"]
+    EXPORT --> JSON["apps/web/public/data/demo/*.json"]
+    JSON --> WEB["Next.js static build"]
+    WEB --> VERCEL["Vercel free"]
+```
+
+`lib/api.ts` switches between the HTTP client and `lib/static-api.ts` using
+`NEXT_PUBLIC_STATIC_DEMO`. Demo cutoffs are annual (plus 2021-05-01) and cross-filters are
+disabled. See [`deployment.md`](deployment.md).
+
 ## Query lifecycle
 
 ```mermaid

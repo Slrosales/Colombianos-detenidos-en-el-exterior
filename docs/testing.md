@@ -34,11 +34,26 @@ The suites are:
   duplicate removal, snapshots.
 - `tests/test_model.py` — the ordinal classifier fits and predicts ordered classes.
 - `pipeline/tests/test_warehouse.py` — ISO3 lookup and unknown-country handling.
+- `pipeline/tests/test_validate.py` — warehouse/manifest invariants.
+- `pipeline/tests/test_export_web_data.py` — static demo JSON generation.
 - `apps/api/tests/test_api.py` — a temporary Parquet fixture is loaded into a test app;
   no real dataset is needed.
 
 The API tests override the app settings and use FastAPI's `TestClient`. They do not touch
 `data/processed/`.
+
+## Static demo
+
+The demo adapter is covered by the export test above. To inspect it in a browser:
+
+```bash
+make web-data
+cd apps/web
+NEXT_PUBLIC_STATIC_DEMO=true pnpm dev
+```
+
+The E2E smoke tests still run against the mocked live API, not the static demo, because the
+static mode is a build-time flag. Add a second Playwright project when the demo UI diverges.
 
 ## Frontend typecheck
 

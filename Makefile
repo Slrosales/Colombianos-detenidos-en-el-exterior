@@ -5,7 +5,7 @@ PIP ?= $(VENV)/bin/pip
 UVICORN ?= $(PY) -m uvicorn
 API_PORT ?= 8000
 
-.PHONY: install install-web download warehouse validate refresh analysis test test-api test-web test-e2e api web build-web report paper clean help
+.PHONY: install install-web download warehouse validate refresh web-data analysis test test-api test-web test-e2e api web build-web report paper clean help
 
 help:
 	@echo "Targets:"
@@ -15,6 +15,7 @@ help:
 	@echo "  warehouse      Build data/processed/detentions.parquet + manifest"
 	@echo "  validate       Validate warehouse + manifest invariants"
 	@echo "  refresh        download + warehouse + validate"
+	@echo "  web-data       Export precomputed JSON for the static demo"
 	@echo "  analysis       Regenerate tables, figures and model metrics"
 	@echo "  test           Run all Python tests"
 	@echo "  api            Run FastAPI on port $(API_PORT)"
@@ -42,6 +43,9 @@ validate:
 	$(PY) pipeline/validate_warehouse.py
 
 refresh: download warehouse validate
+
+web-data:
+	$(PY) pipeline/export_web_data.py
 
 analysis:
 	$(PY) src/analysis.py --input data/raw/colombianos_detenidos.csv

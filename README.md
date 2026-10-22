@@ -21,12 +21,17 @@ El repositorio incluye un explorador web en construcción:
 - **Datos:** `pipeline/build_warehouse.py` aplica la lógica de `src/cleaning.py` y añade
   ISO3, coordenadas y un manifiesto de procedencia.
 - **Despliegue previsto:** Vercel para `apps/web` y Fly.io/Render para `apps/api`.
+- **Demo gratis sin backend:** `make web-data` genera JSON precomputado y el frontend usa
+  `NEXT_PUBLIC_STATIC_DEMO=true`. Se puede desplegar solo en Vercel; luego se conecta la API
+  cambiando esa variable y `NEXT_PUBLIC_API_URL`.
 
 El sitio prioriza el **análisis exploratorio**. El modelo ordinal se conserva como página
 metodológica y laboratorio de aprendizaje, no como predictor público: su QWK ≈ 0,39 no permite
 evaluar a una persona. La documentación técnica y el TODO por módulo están en
-[`docs/`](docs/README.md) y el despliegue en [`docs/deployment.md`](docs/deployment.md). Si eres nuevo en estas tecnologías, empieza por
-[`lessons/`](lessons/README.md): lecciones explicadas desde cero, con diagramas Mermaid y ejercicios.
+[`docs/`](docs/README.md) y el despliegue en
+[`docs/deployment.md`](docs/deployment.md). Si eres nuevo en estas tecnologías, empieza por
+[`lessons/`](lessons/README.md): lecciones explicadas desde cero, con diagramas Mermaid y
+ejercicios.
 
 ```bash
 make install          # dependencias Python
@@ -35,6 +40,7 @@ make download         # descarga el corte más reciente
 make warehouse        # genera data/processed/detentions.parquet
 make validate         # valida warehouse + manifiesto antes de publicar
 make refresh          # download + warehouse + validate
+make web-data         # JSON para la demo estática (sin backend)
 make api              # FastAPI en http://localhost:8000/docs
 make web              # Next.js en http://localhost:3000
 ```

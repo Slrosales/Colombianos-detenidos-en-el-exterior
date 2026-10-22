@@ -20,7 +20,8 @@ apps/web/
 │   ├── QualityPanel.tsx      data-quality indicators
 │   └── ModelPanel.tsx        metrics and limitations
 ├── lib/
-│   ├── api.ts                typed API client
+│   ├── api.ts                typed API client + mode switch
+│   ├── static-api.ts         precomputed JSON adapter for the demo
 │   ├── chart-theme.ts        shared ECharts theme and palette
 │   ├── format.ts             numbers and percentages in es-CO
 │   └── model-reference.ts    static fallback metrics
@@ -29,6 +30,7 @@ apps/web/
 │   └── mock-api.ts           mocked /api responses
 ├── playwright.config.ts      production build on port 3100
 ├── public/data/countries.geojson
+├── public/data/demo/        precomputed demo responses (generated)
 └── package.json
 ```
 
@@ -78,6 +80,16 @@ stateDiagram-v2
     Fetching --> Error: request failed
 ```
 
+## Static demo mode
+
+Set `NEXT_PUBLIC_STATIC_DEMO=true` to replace HTTP queries with the JSON in
+`public/data/demo/`. `lib/api.ts` switches between `httpApi` and `staticApi`; the components
+are unchanged. This mode supports annual cutoffs, the map, country profiles, trends, data
+quality and the 2021→2026 comparison. Cross-filters are disabled and a banner explains why.
+
+Generate the data with `make web-data`. See [`deployment.md`](deployment.md) for the free
+Vercel deployment.
+
 ## Chart theme
 
 All charts share a single ECharts theme registered from `lib/chart-theme.ts`: palette,
@@ -98,6 +110,9 @@ meaning (positive/negative, category hue).
 cd apps/web
 pnpm install
 NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev
+
+# static demo (no API): generate JSON first with `make web-data`
+NEXT_PUBLIC_STATIC_DEMO=true pnpm dev
 ```
 
 End-to-end smoke tests (mocked API, requires `pnpm exec playwright install chromium` once):

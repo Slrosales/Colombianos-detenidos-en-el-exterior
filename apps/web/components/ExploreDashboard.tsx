@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   api,
   API_BASE,
+  STATIC_DEMO,
   type BreakdownRow,
   type CompareRow,
   type CountryRow,
@@ -52,7 +53,9 @@ export function ExploreDashboard() {
 
   const [meta, setMeta] = useState<Meta | null>(null);
   const [cutoff, setCutoff] = useState(() => searchParams.get("cutoff") ?? "");
-  const [filters, setFilters] = useState<Filters>(() => readFilters(searchParams));
+  const [filters, setFilters] = useState<Filters>(() =>
+    STATIC_DEMO ? {} : readFilters(searchParams),
+  );
   const [selected, setSelected] = useState<string | null>(
     () => searchParams.get("pais") ?? null,
   );
@@ -79,8 +82,9 @@ export function ExploreDashboard() {
       })
       .catch((reason: unknown) => {
         if (!active) return;
+        const source = STATIC_DEMO ? "los datos estáticos" : `la API (${API_BASE})`;
         setError(
-          `No se pudo conectar con la API (${API_BASE}). ${
+          `No se pudo conectar con ${source}. ${
             reason instanceof Error ? reason.message : ""
           }`,
         );
@@ -166,6 +170,8 @@ export function ExploreDashboard() {
     const nextPais = searchParams.get("pais") ?? null;
     if (nextPais !== selected) setSelected(nextPais);
 
+    if (STATIC_DEMO) return;
+
     const nextFilters = readFilters(searchParams);
     setFilters((current) =>
       current.delito === nextFilters.delito &&
@@ -225,6 +231,14 @@ export function ExploreDashboard() {
 
       {error ? <div className="error-banner">{error}</div> : null}
 
+      {STATIC_DEMO ? (
+        <div className="demo-banner">
+          <strong>Vista demo estática.</strong> Muestra cortes anuales, mapa, perfiles y
+          comparación 2021→2026 sin backend. Los filtros combinados por delito, edad,
+          género y situación se activan al conectar la API en vivo.
+        </div>
+      ) : null}
+
       <section className="stats-grid" aria-label="Indicadores del corte">
         <StatCard
           label="Detenidos activos"
@@ -262,6 +276,7 @@ export function ExploreDashboard() {
         onChange={setFilters}
         onCutoffChange={handleCutoffChange}
         onReset={handleReset}
+        disabled={STATIC_DEMO}
       />
 
       {loading ? (
