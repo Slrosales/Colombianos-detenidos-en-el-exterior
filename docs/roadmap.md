@@ -35,6 +35,7 @@ flowchart LR
 ## Phase 2 — Deployment and data updates
 
 - [ ] GitHub Action: monthly download, warehouse build, manifest validation.
+- [ ] CI workflow for unit/API tests, typecheck and Playwright (see [`testing.md`](testing.md)).
 - [ ] Deploy API to Fly.io or Render with Docker.
 - [ ] Deploy web to Vercel with `NEXT_PUBLIC_API_URL`.
 - [ ] Add `/api/health` uptime check and deploy hook.
@@ -95,4 +96,4 @@ flowchart LR
 
 - [ ] Move `src/` to `pipeline/` when the API no longer imports it directly.
 - [ ] Add pre-commit (ruff, prettier, eslint).
-- [ ] Add a CI workflow for Python tests and Next build.
+- [ ] Add a CI workflow for Python tests, typecheck and E2E (see [`testing.md`](testing.md)).

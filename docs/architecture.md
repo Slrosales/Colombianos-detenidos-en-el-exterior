@@ -113,6 +113,19 @@ the HTTP contract.
 | Charts | Apache ECharts | Rich tooltips, bars, diverging comparison |
 | Deploy API | Docker on Fly.io / Render / Railway | Python and data fit naturally |
 | Deploy web | Vercel | Preview deploys and CDN |
+| Tests | pytest + `tsc` + Playwright | Cheap unit/API checks plus one browser smoke test |
+
+## Testing strategy
+
+```mermaid
+flowchart LR
+    UNIT["Unit tests<br/>cleaning, model, pipeline"] --> API["API tests<br/>FastAPI TestClient + fixture"]
+    API --> TYPE["Typecheck<br/>TypeScript contracts"]
+    TYPE --> E2E["E2E smoke<br/>Playwright + mocked /api"]
+```
+
+The E2E suite runs a production build on port `3100` and mocks `/api/**`, so it does not
+need the real warehouse. See [`testing.md`](testing.md) for commands and CI guidance.
 
 ## Boundaries
 

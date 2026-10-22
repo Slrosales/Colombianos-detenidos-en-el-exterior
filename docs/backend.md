@@ -89,7 +89,8 @@ Open <http://localhost:8000/docs>.
 ```
 
 Tests build a tiny Parquet fixture, override the settings and exercise the routes without
-touching the real dataset.
+touching the real dataset. The full strategy (unit, API, typecheck and E2E) is in
+[`testing.md`](testing.md).
 
 ## Deployment
 

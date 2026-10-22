@@ -195,7 +195,13 @@ Pruebas:
 make test             # tests de limpieza, modelo, pipeline y API
 make test-web         # typecheck de TypeScript
 make build-web        # build de producción
+
+# E2E (la primera vez: cd apps/web && pnpm exec playwright install chromium)
+make test-e2e         # Playwright: mapa, URL y filtros con API simulada
 ```
+
+El detalle de cada capa y la recomendación para CI están en
+[`docs/testing.md`](docs/testing.md).
 
 ### Investigación y PDF
 
