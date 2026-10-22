@@ -2,7 +2,13 @@ export const API_BASE = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 ).replace(/\/$/, "");
 
-export type Dimension = "pais" | "delito" | "edad" | "genero" | "situacion";
+export type Dimension =
+  | "pais"
+  | "delito"
+  | "edad"
+  | "genero"
+  | "situacion"
+  | "consulado";
 
 export type Filters = {
   pais?: string;

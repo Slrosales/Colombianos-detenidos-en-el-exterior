@@ -730,3 +730,93 @@ h1 {
 .maplibregl-ctrl-icon {
   filter: invert(0.8);
 }
+
+.quality-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.quality-row {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 11px;
+}
+
+.quality-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.quality-meta {
+  align-items: baseline;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.quality-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.quality-value {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.quality-note {
+  color: var(--faint);
+  font-size: 10px;
+  margin: 2px 0 0;
+}
+
+.map-empty {
+  align-items: center;
+  background: rgba(8, 13, 22, 0.72);
+  color: var(--muted);
+  display: flex;
+  font-size: 12px;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: absolute;
+  text-align: center;
+  z-index: 6;
+}
+
+.skeleton-page {
+  margin: 0 auto;
+  max-width: var(--max);
+  padding: 38px 24px 70px;
+}
+
+.skeleton-hero {
+  background: linear-gradient(90deg, var(--bg-soft), var(--bg-elevated), var(--bg-soft));
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+  height: 120px;
+  margin-bottom: 22px;
+  max-width: 680px;
+}
+
+.skeleton-block {
+  background: linear-gradient(90deg, var(--bg-soft), var(--bg-elevated), var(--bg-soft));
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius);
+  height: 420px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

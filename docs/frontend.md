@@ -17,6 +17,7 @@ apps/web/
 │   ├── ComparePanel.tsx      2021 vs 2026 diverging chart
 │   ├── CountryPanel.tsx      country profile
 │   ├── StatCard.tsx          headline indicators
+│   ├── QualityPanel.tsx      data-quality indicators
 │   └── ModelPanel.tsx        metrics and limitations
 ├── lib/
 │   ├── api.ts                typed API client
@@ -27,6 +28,9 @@ apps/web/
 ```
 
 ## UX rules
+
+- The browser URL mirrors the view (`?cutoff=...&pais=...&delito=...`), so any state
+  can be copied and shared.
 
 - Spanish (`es-CO`) is the interface language.
 - The cutoff is always visible. There is no ambiguous "latest" label without a date.
@@ -96,7 +100,7 @@ Open <http://localhost:3000>.
 
 ## TODO
 
-- [ ] URL-synced filters (`?cutoff=...&pais=...`) for shareable views.
+- [x] URL-synced filters (`?cutoff=...&pais=...`) for shareable views.
 - [ ] Country profile page with a static, indexable route.
 - [ ] Download filtered CSV.
 - [ ] Accessibility audit and keyboard navigation on the map.

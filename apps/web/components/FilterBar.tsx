@@ -13,7 +13,9 @@ type FilterBarProps = {
   onReset: () => void;
 };
 
-const DIMENSIONS: Array<{ key: Dimension; label: string }> = [
+type FilterKey = Exclude<Dimension, "pais" | "consulado">;
+
+const DIMENSIONS: Array<{ key: FilterKey; label: string }> = [
   { key: "delito", label: "Delito" },
   { key: "edad", label: "Grupo de edad" },
   { key: "genero", label: "Género" },

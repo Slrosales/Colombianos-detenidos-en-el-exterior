@@ -6,7 +6,10 @@ import { formatNumber, formatPercent } from "@/lib/format";
 type CountryPanelProps = {
   selected: string | null;
   country: CountryRow | undefined;
-  groups: Record<"delito" | "edad" | "genero" | "situacion", BreakdownRow[]>;
+  groups: Record<
+    "delito" | "edad" | "genero" | "situacion" | "consulado",
+    BreakdownRow[]
+  >;
   onClear: () => void;
 };
 
@@ -15,6 +18,7 @@ const LABELS = {
   edad: "Edad",
   genero: "Género",
   situacion: "Situación jurídica",
+  consulado: "Consulados",
 };
 
 export function CountryPanel({

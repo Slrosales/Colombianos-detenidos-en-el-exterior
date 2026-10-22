@@ -24,12 +24,12 @@ flowchart LR
 
 ## Phase 1 — Explore v1 polish
 
-- [ ] Add URL-synced filters (`?cutoff=...&pais=...`) using `nuqs` or native search params.
-- [ ] Add country profile drawer with consulates and legal-situation breakdown.
-- [ ] Add comparison chart with a diverging bar and percentage labels.
-- [ ] Show data-quality panel (unknown age, unknown crime, imputed country).
+- [x] Add URL-synced filters (`?cutoff=...&pais=...`) using native search params.
+- [x] Add country profile drawer with consulates and legal-situation breakdown.
+- [x] Add comparison chart with a diverging bar and percentage labels.
+- [x] Show data-quality panel (unknown age, unknown crime, imputed country).
 - [ ] Replace placeholder chart styling with a shared theme.
-- [ ] Add empty, loading and error states for every panel.
+- [x] Add empty, loading and error states for every panel.
 - [ ] Add Playwright smoke test: map loads, country click filters charts.
 
 ## Phase 2 — Deployment and data updates
@@ -85,7 +85,7 @@ flowchart LR
 
 ### `apps/web/`
 
-- [ ] URL state and shareable views.
+- [x] URL state and shareable views.
 - [ ] Country detail route.
 - [ ] Download controls.
 - [ ] i18n.

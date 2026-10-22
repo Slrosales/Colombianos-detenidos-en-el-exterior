@@ -299,6 +299,9 @@ export function WorldMap({ data, selected, onSelect }: WorldMapProps) {
         role="application"
         aria-label="Mapa mundial interactivo de colombianos detenidos activos por país"
       />
+      {data.length === 0 ? (
+        <div className="map-empty">Sin países que cumplan este filtro.</div>
+      ) : null}
       <div className="map-legend">
         <div className="legend-title">Detenidos activos</div>
         <div className="legend-items">

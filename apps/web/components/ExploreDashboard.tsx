@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   api,
   API_BASE,
@@ -17,19 +18,44 @@ import { BarPanel } from "./BarPanel";
 import { ComparePanel } from "./ComparePanel";
 import { CountryPanel } from "./CountryPanel";
 import { FilterBar } from "./FilterBar";
+import { QualityPanel } from "./QualityPanel";
 import { StatCard } from "./StatCard";
 import { TrendPanel } from "./TrendPanel";
 import { WorldMap } from "./WorldMap";
 
-type Groups = Record<"delito" | "edad" | "genero" | "situacion", BreakdownRow[]>;
+type Groups = Record<
+  "delito" | "edad" | "genero" | "situacion" | "consulado",
+  BreakdownRow[]
+>;
 
-const EMPTY_GROUPS: Groups = { delito: [], edad: [], genero: [], situacion: [] };
+const EMPTY_GROUPS: Groups = {
+  delito: [],
+  edad: [],
+  genero: [],
+  situacion: [],
+  consulado: [],
+};
+
+function readFilters(searchParams: URLSearchParams): Filters {
+  return {
+    delito: searchParams.get("delito") ?? undefined,
+    edad: searchParams.get("edad") ?? undefined,
+    genero: searchParams.get("genero") ?? undefined,
+    situacion: searchParams.get("situacion") ?? undefined,
+  };
+}
 
 export function ExploreDashboard() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [meta, setMeta] = useState<Meta | null>(null);
-  const [cutoff, setCutoff] = useState("");
-  const [filters, setFilters] = useState<Filters>({});
-  const [selected, setSelected] = useState<string | null>(null);
+  const [cutoff, setCutoff] = useState(() => searchParams.get("cutoff") ?? "");
+  const [filters, setFilters] = useState<Filters>(() => readFilters(searchParams));
+  const [selected, setSelected] = useState<string | null>(
+    () => searchParams.get("pais") ?? null,
+  );
   const [options, setOptions] = useState<FiltersResponse | null>(null);
   const [countries, setCountries] = useState<CountryRow[]>([]);
   const [groups, setGroups] = useState<Groups>(EMPTY_GROUPS);
@@ -45,7 +71,11 @@ export function ExploreDashboard() {
       .then((value) => {
         if (!active) return;
         setMeta(value);
-        setCutoff(value.corte_actual);
+        setCutoff((current) =>
+          current && value.cutoffs.includes(current)
+            ? current
+            : value.corte_actual,
+        );
       })
       .catch((reason: unknown) => {
         if (!active) return;
@@ -62,13 +92,13 @@ export function ExploreDashboard() {
   }, []);
 
   useEffect(() => {
-    if (!cutoff) return;
+    if (!cutoff || !meta) return;
     let active = true;
     setError(null);
     Promise.all([
       api.filters(cutoff),
       api.countries(cutoff, filters),
-      api.compare("2021-05-01", meta?.corte_actual),
+      api.compare("2021-05-01", meta.corte_actual),
     ])
       .then(([filterOptions, countryRows, compareRows]) => {
         if (!active) return;
@@ -86,10 +116,10 @@ export function ExploreDashboard() {
     return () => {
       active = false;
     };
-  }, [cutoff, filters, meta?.corte_actual]);
+  }, [cutoff, filters, meta]);
 
   useEffect(() => {
-    if (!cutoff) return;
+    if (!cutoff || !meta) return;
     let active = true;
     const scoped = { ...filters, pais: selected ?? undefined };
     Promise.all([
@@ -97,11 +127,12 @@ export function ExploreDashboard() {
       api.breakdown("edad", cutoff, scoped),
       api.breakdown("genero", cutoff, scoped),
       api.breakdown("situacion", cutoff, scoped),
+      api.breakdown("consulado", cutoff, scoped),
       api.trend(scoped),
     ])
-      .then(([delito, edad, genero, situacion, trendRows]) => {
+      .then(([delito, edad, genero, situacion, consulado, trendRows]) => {
         if (!active) return;
-        setGroups({ delito, edad, genero, situacion });
+        setGroups({ delito, edad, genero, situacion, consulado });
         setTrend(trendRows);
       })
       .catch((reason: unknown) => {
@@ -111,7 +142,40 @@ export function ExploreDashboard() {
     return () => {
       active = false;
     };
-  }, [cutoff, filters, selected]);
+  }, [cutoff, filters, selected, meta]);
+
+  // Keep the URL in sync so any view is shareable.
+  useEffect(() => {
+    if (!meta) return;
+    const params = new URLSearchParams();
+    if (cutoff && cutoff !== meta.corte_actual) params.set("cutoff", cutoff);
+    if (selected) params.set("pais", selected);
+    if (filters.delito) params.set("delito", filters.delito);
+    if (filters.edad) params.set("edad", filters.edad);
+    if (filters.genero) params.set("genero", filters.genero);
+    if (filters.situacion) params.set("situacion", filters.situacion);
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }, [cutoff, selected, filters, meta, pathname, router]);
+
+  // React to browser back/forward or an edited URL.
+  useEffect(() => {
+    const nextCutoff = searchParams.get("cutoff");
+    if (nextCutoff && nextCutoff !== cutoff) setCutoff(nextCutoff);
+
+    const nextPais = searchParams.get("pais") ?? null;
+    if (nextPais !== selected) setSelected(nextPais);
+
+    const nextFilters = readFilters(searchParams);
+    setFilters((current) =>
+      current.delito === nextFilters.delito &&
+      current.edad === nextFilters.edad &&
+      current.genero === nextFilters.genero &&
+      current.situacion === nextFilters.situacion
+        ? current
+        : nextFilters,
+    );
+  }, [searchParams, cutoff, selected]);
 
   const selectedCountry = useMemo(
     () => countries.find((row) => row.pais === selected),
@@ -149,7 +213,8 @@ export function ExploreDashboard() {
           <p>
             Consulta el stock de personas detenidas activas por país, delito, edad,
             género y situación jurídica. Cada cifra corresponde a un corte de
-            publicación; las comparaciones usan el último corte de cada año.
+            publicación; las comparaciones usan el último corte de cada año. El enlace
+            del navegador se actualiza para que puedas compartir cualquier vista.
           </p>
         </div>
         <div className="cutoff-chip">
@@ -255,13 +320,7 @@ export function ExploreDashboard() {
               rows={groups.situacion}
               color="#5ec8d8"
             />
-            <BarPanel
-              title="Consulados"
-              subtitle="Los consulados permiten recuperar el país después de 2022."
-              rows={options?.values?.consulado ?? []}
-              color="#c9a35e"
-              limit={6}
-            />
+            <QualityPanel meta={meta} options={options} />
           </div>
 
           <ComparePanel
@@ -269,7 +328,6 @@ export function ExploreDashboard() {
             base="2021-05-01"
             target={meta?.corte_actual ?? cutoff}
           />
-
         </>
       )}
     </main>
