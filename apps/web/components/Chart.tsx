@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { ECharts, EChartsOption } from "echarts";
+import { CHART_THEME_NAME, chartTheme } from "@/lib/chart-theme";
 
 type ChartProps = {
   option: EChartsOption;
@@ -20,7 +21,8 @@ export function Chart({ option, className = "chart" }: ChartProps) {
       const echarts = await import("echarts");
       if (disposed || !containerRef.current) return;
 
-      const chart = echarts.init(containerRef.current, undefined, {
+      echarts.registerTheme(CHART_THEME_NAME, chartTheme);
+      const chart = echarts.init(containerRef.current, CHART_THEME_NAME, {
         renderer: "canvas",
       });
       chartRef.current = chart;

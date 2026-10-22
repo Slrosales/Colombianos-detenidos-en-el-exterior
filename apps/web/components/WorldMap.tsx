@@ -148,6 +148,15 @@ export function WorldMap({ data, selected, onSelect }: WorldMapProps) {
       const maplibregl = await import("maplibre-gl");
       if (disposed || !containerRef.current) return;
 
+      // Next.js/Turbopack does not resolve the worker URL automatically; point it at
+      // the self-contained worker module so the map renders in dev and production.
+      maplibregl.setWorkerUrl(
+        new URL(
+          "maplibre-gl/dist/maplibre-gl-worker.mjs",
+          import.meta.url,
+        ).href,
+      );
+
       map = new maplibregl.Map({
         container: containerRef.current,
         style: BASE_STYLE,

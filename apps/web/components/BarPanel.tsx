@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import type { EChartsOption } from "echarts";
 import type { BreakdownRow } from "@/lib/api";
+import { PALETTE, TOOLTIP } from "@/lib/chart-theme";
 import { formatNumber, shortLabel } from "@/lib/format";
 import { Chart } from "./Chart";
 
@@ -15,19 +16,11 @@ type BarPanelProps = {
   className?: string;
 };
 
-const TOOLTIP = {
-  backgroundColor: "#0b1422",
-  borderColor: "#2b4364",
-  borderWidth: 1,
-  padding: 10,
-  textStyle: { color: "#eef4fc", fontSize: 11 },
-};
-
 export function BarPanel({
   title,
   subtitle,
   rows,
-  color = "#5ec8d8",
+  color = PALETTE.cyan,
   limit = 8,
   className = "chart",
 }: BarPanelProps) {
@@ -35,7 +28,6 @@ export function BarPanel({
     const top = rows.slice(0, limit);
     const values = [...top].reverse();
     return {
-      backgroundColor: "transparent",
       animationDuration: 450,
       grid: { left: 8, right: 54, top: 8, bottom: 4, containLabel: true },
       tooltip: {
@@ -44,17 +36,10 @@ export function BarPanel({
         axisPointer: { type: "shadow", shadowStyle: { color: "rgba(94,200,216,.06)" } },
         valueFormatter: (value) => `${formatNumber(Number(value))} detenidos`,
       },
-      xAxis: {
-        type: "value",
-        splitLine: { lineStyle: { color: "rgba(120,150,190,.10)" } },
-        axisLabel: { color: "#6e819b", fontSize: 9 },
-      },
+      xAxis: { type: "value" },
       yAxis: {
         type: "category",
         data: values.map((row) => shortLabel(row.valor, 24)),
-        axisLabel: { color: "#9eb0c7", fontSize: 10 },
-        axisLine: { show: false },
-        axisTick: { show: false },
       },
       series: [
         {
@@ -65,7 +50,6 @@ export function BarPanel({
           label: {
             show: true,
             position: "right",
-            color: "#9eb0c7",
             fontSize: 9,
             formatter: (params) => formatNumber(Number(params.value)),
           },

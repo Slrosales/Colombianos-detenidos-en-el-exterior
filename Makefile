@@ -4,7 +4,7 @@ PY = $(VENV)/bin/python
 PIP = $(VENV)/bin/pip
 API_PORT ?= 8000
 
-.PHONY: install install-web download warehouse analysis test test-api test-web api web build-web report paper clean help
+.PHONY: install install-web download warehouse analysis test test-api test-web test-e2e api web build-web report paper clean help
 
 help:
 	@echo "Targets:"
@@ -46,6 +46,9 @@ test-api:
 
 test-web:
 	cd apps/web && pnpm typecheck
+
+test-e2e:
+	cd apps/web && pnpm test:e2e
 
 api:
 	$(VENV)/bin/uvicorn apps.api.app.main:app --reload --port $(API_PORT)

@@ -3,26 +3,14 @@
 import { useMemo } from "react";
 import type { EChartsOption } from "echarts";
 import type { CompareRow } from "@/lib/api";
-import {
-  formatNumber,
-  formatPercent,
-  formatSignedPercent,
-  shortLabel,
-} from "@/lib/format";
+import { PALETTE, TOOLTIP } from "@/lib/chart-theme";
+import { formatNumber, formatSignedPercent, shortLabel } from "@/lib/format";
 import { Chart } from "./Chart";
 
 type ComparePanelProps = {
   rows: CompareRow[];
   base: string;
   target: string;
-};
-
-const TOOLTIP = {
-  backgroundColor: "#0b1422",
-  borderColor: "#2b4364",
-  borderWidth: 1,
-  padding: 10,
-  textStyle: { color: "#eef4fc", fontSize: 11 },
 };
 
 export function ComparePanel({ rows, base, target }: ComparePanelProps) {
@@ -48,7 +36,6 @@ export function ComparePanel({ rows, base, target }: ComparePanelProps) {
     );
     const values = [...selected].reverse();
     return {
-      backgroundColor: "transparent",
       animationDuration: 500,
       grid: { left: 8, right: 48, top: 8, bottom: 6, containLabel: true },
       tooltip: {
@@ -70,18 +57,12 @@ export function ComparePanel({ rows, base, target }: ComparePanelProps) {
       xAxis: {
         type: "value",
         axisLabel: {
-          color: "#6e819b",
-          fontSize: 9,
           formatter: (value: number) => `${value}%`,
         },
-        splitLine: { lineStyle: { color: "rgba(120,150,190,.10)" } },
       },
       yAxis: {
         type: "category",
         data: values.map((row) => shortLabel(row.pais, 22)),
-        axisLabel: { color: "#9eb0c7", fontSize: 10 },
-        axisLine: { show: false },
-        axisTick: { show: false },
       },
       series: [
         {
@@ -90,14 +71,16 @@ export function ComparePanel({ rows, base, target }: ComparePanelProps) {
           data: values.map((row) => ({
             value: row.cambio_pct,
             itemStyle: {
-              color: (row.cambio_pct ?? 0) >= 0 ? "#6bcf9b" : "#e17268",
+              color:
+                (row.cambio_pct ?? 0) >= 0
+                  ? PALETTE.positive
+                  : PALETTE.negative,
               borderRadius:
                 (row.cambio_pct ?? 0) >= 0 ? [0, 5, 5, 0] : [5, 0, 0, 5],
             },
             label: {
               show: true,
               position: (row.cambio_pct ?? 0) >= 0 ? "right" : "left",
-              color: "#9eb0c7",
               fontSize: 9,
               formatter: formatSignedPercent(row.cambio_pct),
             },

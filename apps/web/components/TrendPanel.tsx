@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import type { EChartsOption } from "echarts";
 import type { TrendPoint } from "@/lib/api";
+import { PALETTE, TOOLTIP } from "@/lib/chart-theme";
 import { formatNumber } from "@/lib/format";
 import { Chart } from "./Chart";
 
@@ -11,19 +12,10 @@ type TrendPanelProps = {
   country?: string | null;
 };
 
-const TOOLTIP = {
-  backgroundColor: "#0b1422",
-  borderColor: "#2b4364",
-  borderWidth: 1,
-  padding: 10,
-  textStyle: { color: "#eef4fc", fontSize: 11 },
-};
-
 export function TrendPanel({ points, country }: TrendPanelProps) {
   const option = useMemo<EChartsOption>(() => {
     const last = points.at(-1);
     return {
-      backgroundColor: "transparent",
       animationDuration: 500,
       grid: { left: 10, right: 18, top: 20, bottom: 8, containLabel: true },
       tooltip: {
@@ -35,16 +27,10 @@ export function TrendPanel({ points, country }: TrendPanelProps) {
         type: "category",
         boundaryGap: false,
         data: points.map((point) => point.anio),
-        axisLabel: { color: "#6e819b", fontSize: 10 },
-        axisLine: { lineStyle: { color: "#263850" } },
-        axisTick: { show: false },
       },
       yAxis: {
         type: "value",
-        splitLine: { lineStyle: { color: "rgba(120,150,190,.10)" } },
         axisLabel: {
-          color: "#6e819b",
-          fontSize: 9,
           formatter: (value: number) => `${Math.round(value / 1000)}k`,
         },
       },
@@ -55,8 +41,12 @@ export function TrendPanel({ points, country }: TrendPanelProps) {
           smooth: 0.25,
           symbol: "circle",
           symbolSize: 6,
-          lineStyle: { color: "#5ec8d8", width: 2.4 },
-          itemStyle: { color: "#8be3ee", borderColor: "#080d16", borderWidth: 2 },
+          lineStyle: { color: PALETTE.cyan, width: 2.4 },
+          itemStyle: {
+            color: PALETTE.cyanBright,
+            borderColor: "#080d16",
+            borderWidth: 2,
+          },
           areaStyle: {
             color: {
               type: "linear",
@@ -74,7 +64,7 @@ export function TrendPanel({ points, country }: TrendPanelProps) {
             ? {
                 symbol: "circle",
                 symbolSize: 9,
-                itemStyle: { color: "#8be3ee" },
+                itemStyle: { color: PALETTE.cyanBright },
                 label: {
                   show: true,
                   position: "top",

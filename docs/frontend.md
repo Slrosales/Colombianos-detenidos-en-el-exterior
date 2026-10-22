@@ -21,8 +21,12 @@ apps/web/
 │   └── ModelPanel.tsx        metrics and limitations
 ├── lib/
 │   ├── api.ts                typed API client
+│   ├── chart-theme.ts        shared ECharts theme and palette
 │   ├── format.ts             numbers and percentages in es-CO
 │   └── model-reference.ts    static fallback metrics
+├── e2e/
+│   ├── dashboard.spec.ts     Playwright smoke tests
+│   └── mock-api.ts           mocked /api responses
 ├── public/data/countries.geojson
 └── package.json
 ```
@@ -74,6 +78,12 @@ stateDiagram-v2
     Fetching --> Error: request failed
 ```
 
+## Chart theme
+
+All charts share a single ECharts theme registered from `lib/chart-theme.ts`: palette,
+tooltip, background, text and axis styles. Panels still set per-series colors for semantic
+meaning (positive/negative, category hue).
+
 ## Map
 
 - MapLibre GL JS with a blank background and a committed GeoJSON.
@@ -90,6 +100,13 @@ pnpm install
 NEXT_PUBLIC_API_URL=http://localhost:8000 pnpm dev
 ```
 
+End-to-end smoke tests (mocked API, requires `pnpm exec playwright install chromium` once):
+
+```bash
+cd apps/web
+pnpm test:e2e
+```
+
 Open <http://localhost:3000>.
 
 ## Production
@@ -101,6 +118,7 @@ Open <http://localhost:3000>.
 ## TODO
 
 - [x] URL-synced filters (`?cutoff=...&pais=...`) for shareable views.
+- [x] Shared chart theme and Playwright smoke tests.
 - [ ] Country profile page with a static, indexable route.
 - [ ] Download filtered CSV.
 - [ ] Accessibility audit and keyboard navigation on the map.

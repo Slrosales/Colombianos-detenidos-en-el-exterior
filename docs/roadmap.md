@@ -28,9 +28,9 @@ flowchart LR
 - [x] Add country profile drawer with consulates and legal-situation breakdown.
 - [x] Add comparison chart with a diverging bar and percentage labels.
 - [x] Show data-quality panel (unknown age, unknown crime, imputed country).
-- [ ] Replace placeholder chart styling with a shared theme.
+- [x] Replace placeholder chart styling with a shared theme (`lib/chart-theme.ts`).
 - [x] Add empty, loading and error states for every panel.
-- [ ] Add Playwright smoke test: map loads, country click filters charts.
+- [x] Add Playwright smoke test: map loads, URL country and filter sync.
 
 ## Phase 2 — Deployment and data updates
 
