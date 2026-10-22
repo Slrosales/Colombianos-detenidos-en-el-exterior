@@ -32,15 +32,15 @@ flowchart LR
 - [x] Add empty, loading and error states for every panel.
 - [x] Add Playwright smoke test: map loads, URL country and filter sync.
 
-## Phase 2 — Deployment and data updates
+## Phase 2 — Deployment and data updates (groundwork ready)
 
-- [ ] GitHub Action: monthly download, warehouse build, manifest validation.
-- [ ] CI workflow for unit/API tests, typecheck and Playwright (see [`testing.md`](testing.md)).
-- [ ] Deploy API to Fly.io or Render with Docker.
-- [ ] Deploy web to Vercel with `NEXT_PUBLIC_API_URL`.
-- [ ] Add `/api/health` uptime check and deploy hook.
-- [ ] Cache API responses with `ETag` keyed by cutoff.
-- [ ] Document rollback to a previous warehouse version.
+- [x] GitHub Action: monthly download, warehouse build, manifest validation.
+- [x] CI workflow for unit/API tests, typecheck and Playwright (see [`testing.md`](testing.md)).
+- [ ] Deploy API to Fly.io or Render with Docker (requires account; config is in `fly.toml`).
+- [ ] Deploy web to Vercel with `NEXT_PUBLIC_API_URL` (requires account).
+- [x] Add `/api/health` uptime check and deploy hook support.
+- [x] Cache API responses with `ETag` keyed by dataset checksum.
+- [x] Document rollback to a previous warehouse version (see [`deployment.md`](deployment.md)).
 
 ## Phase 3 — Research and content
 

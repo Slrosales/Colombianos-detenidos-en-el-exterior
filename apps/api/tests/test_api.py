@@ -140,3 +140,36 @@ def test_filters_endpoint(client: TestClient) -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["values"]["pais"][0]["cantidad"] == 20
+
+
+def test_cache_headers_and_conditional_request(client: TestClient) -> None:
+    url = "/api/countries?cutoff=2026-10-09"
+    first = client.get(url)
+    assert first.status_code == 200
+    etag = first.headers["etag"]
+    assert etag.startswith('"')
+    assert "max-age=300" in first.headers["cache-control"]
+
+    second = client.get(
+        url,
+        headers={
+            "If-None-Match": etag,
+            "Origin": "http://testserver",
+        },
+    )
+    assert second.status_code == 304
+    assert second.headers["etag"] == etag
+    assert second.headers["access-control-allow-origin"] == "http://testserver"
+    assert second.content == b""
+
+
+def test_etag_depends_on_resource(client: TestClient) -> None:
+    countries = client.get("/api/countries?cutoff=2026-10-09")
+    breakdown = client.get("/api/breakdown/delito?cutoff=2026-10-09")
+    assert countries.headers["etag"] != breakdown.headers["etag"]
+
+
+def test_health_is_not_cached(client: TestClient) -> None:
+    response = client.get("/api/health")
+    assert response.status_code == 200
+    assert "etag" not in response.headers

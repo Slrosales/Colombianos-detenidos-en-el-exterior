@@ -113,6 +113,8 @@ Open <http://localhost:3000>.
 
 ## Production
 
+See [`deployment.md`](deployment.md) for the full release and rollback procedure.
+
 - Vercel project root: `apps/web`.
 - Environment: `NEXT_PUBLIC_API_URL=https://api.example.org`.
 - The GeoJSON is static and cacheable; the API responses depend on the cutoff.

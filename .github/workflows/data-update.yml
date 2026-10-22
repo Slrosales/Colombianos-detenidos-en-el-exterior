@@ -1,0 +1,80 @@
+name: Data update
+
+on:
+  schedule:
+    # Monthly, on day 1 at 08:00 UTC. Adjust to the source publication rhythm.
+    - cron: "0 8 1 * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data-update
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    name: Download, build and validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      API_DEPLOY_HOOK: ${{ secrets.API_DEPLOY_HOOK }}
+      VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Download latest cutoff
+        run: make download PY=python
+
+      - name: Build warehouse
+        run: make warehouse PY=python
+
+      - name: Validate warehouse and manifest
+        run: make validate PY=python
+
+      - name: Read cutoff
+        id: meta
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path("data/processed/manifest.json").read_text())
+          print(f"cutoff={manifest['corte_actual']}")
+          print(f"detainees={manifest['total_corte_actual']}")
+          PY
+
+      - name: Write job summary
+        run: |
+          {
+            echo "## Warehouse refreshed"
+            echo ""
+            echo "- Cutoff: \`${{ steps.meta.outputs.cutoff }}\`"
+            echo "- Active detainees: **${{ steps.meta.outputs.detainees }}**"
+            echo "- Validation: passed"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload warehouse artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: warehouse-${{ steps.meta.outputs.cutoff }}
+          path: |
+            data/processed/detentions.parquet
+            data/processed/manifest.json
+          retention-days: 90
+
+      - name: Trigger API deploy
+        if: env.API_DEPLOY_HOOK != ''
+        run: curl -fsS -X POST "$API_DEPLOY_HOOK"
+
+      - name: Trigger web deploy
+        if: env.VERCEL_DEPLOY_HOOK != ''
+        run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"

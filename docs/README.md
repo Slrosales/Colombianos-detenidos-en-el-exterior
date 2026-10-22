@@ -14,6 +14,7 @@ Start here:
 | [`research-2026.md`](research-2026.md) | The 2026 methodological decisions that the site must preserve |
 | [`model-lab.md`](model-lab.md) | Why ML is not a public predictor and how the server-side lab should work |
 | [`testing.md`](testing.md) | Test layers, commands and CI recommendation |
+| [`deployment.md`](deployment.md) | Production topology, Fly.io/Vercel steps, data updates and rollback |
 | [`roadmap.md`](roadmap.md) | Phased TODO for every module |
 | [`../lessons/README.md`](../lessons/README.md) | Beginner-friendly lessons for the whole stack |
 | [`decisions/0001-stack.md`](decisions/0001-stack.md) | Architecture decision record for the initial stack |

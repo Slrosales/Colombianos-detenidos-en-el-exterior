@@ -100,6 +100,8 @@ Failed tests write traces to `test-results/`, which is ignored by Git. Use
 
 ## CI recommendation
 
+The repository includes `.github/workflows/ci.yml` with exactly these steps.
+
 ```bash
 make test          # unit + API
 make test-web      # typecheck

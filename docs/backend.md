@@ -72,6 +72,13 @@ uvicorn apps.api.app.main:app --reload --port 8000
 
 Open <http://localhost:8000/docs>.
 
+## Caching
+
+Successful `GET /api/*` responses include an `ETag` derived from the dataset checksum plus
+the request path/query, and a `Cache-Control` header. A request with a matching
+`If-None-Match` receives `304 Not Modified`. `/api/health` is never cached. See
+`apps/api/app/cache.py`.
+
 ## Environment
 
 | Variable | Default | Purpose |

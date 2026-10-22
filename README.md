@@ -25,7 +25,7 @@ El repositorio incluye un explorador web en construcción:
 El sitio prioriza el **análisis exploratorio**. El modelo ordinal se conserva como página
 metodológica y laboratorio de aprendizaje, no como predictor público: su QWK ≈ 0,39 no permite
 evaluar a una persona. La documentación técnica y el TODO por módulo están en
-[`docs/`](docs/README.md). Si eres nuevo en estas tecnologías, empieza por
+[`docs/`](docs/README.md) y el despliegue en [`docs/deployment.md`](docs/deployment.md). Si eres nuevo en estas tecnologías, empieza por
 [`lessons/`](lessons/README.md): lecciones explicadas desde cero, con diagramas Mermaid y ejercicios.
 
 ```bash
@@ -33,6 +33,8 @@ make install          # dependencias Python
 make install-web      # dependencias del frontend
 make download         # descarga el corte más reciente
 make warehouse        # genera data/processed/detentions.parquet
+make validate         # valida warehouse + manifiesto antes de publicar
+make refresh          # download + warehouse + validate
 make api              # FastAPI en http://localhost:8000/docs
 make web              # Next.js en http://localhost:3000
 ```
@@ -69,9 +71,11 @@ detenidos queda sin país identificado.
 .
 ├── README.md
 ├── Makefile
+├── fly.toml                      # Configuración de Fly.io para la API
 ├── requirements.txt
 ├── requirements-dev.txt
-├── docs/                         # Arquitectura, contrato de datos, modelo y roadmap
+├── .github/workflows/            # CI y actualización programada de datos
+├── docs/                         # Arquitectura, datos, testing, despliegue y roadmap
 ├── lessons/                      # Lecciones para aprender el stack desde cero
 ├── config/
 │   ├── consulado_a_pais.json
@@ -80,12 +84,13 @@ detenidos queda sin país identificado.
 │   ├── external/                 # Países, coordenadas y shapefile
 │   ├── raw/                      # Descarga original (ignorada por git)
 │   └── processed/                # Parquet + manifiesto (ignorados por git)
-├── pipeline/                     # Construcción del warehouse para la API
+├── pipeline/                     # Construcción y validación del warehouse
 │   ├── build_warehouse.py
+│   ├── validate_warehouse.py
 │   └── tests/
 ├── apps/
 │   ├── api/                      # FastAPI + DuckDB
-│   └── web/                      # Next.js + MapLibre + ECharts
+│   └── web/                      # Next.js + MapLibre + ECharts + Playwright
 ├── notebooks/                    # Notebooks originales, preservados
 │   ├── Colombianos_detenidos_en_el_exterior.ipynb
 │   ├── ML_Colombianos_detenidos.ipynb
@@ -181,8 +186,9 @@ make download
 # 3. Generar tablas, figuras y métricas de investigación
 make analysis
 
-# 4. Construir el warehouse consultable
+# 4. Construir y validar el warehouse consultable
 make warehouse
+make validate
 
 # 5. Levantar backend y frontend en dos terminales
 make api              # http://localhost:8000/docs

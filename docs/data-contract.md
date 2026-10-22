@@ -127,6 +127,16 @@ Response: ordered probabilities for `EN INVESTIGACIÓN`, `EN JUICIO`, `CONDENADO
 model version and an explicit `advertencia` string. This endpoint must never be presented as
 a real risk assessment about a person.
 
+## Caching
+
+Successful `GET` responses under `/api/` include:
+
+- `ETag`: dataset checksum + resource path/query;
+- `Cache-Control: public, max-age=300, stale-while-revalidate=600`.
+
+Send `If-None-Match` with the previous ETag to receive `304 Not Modified`. `/api/health` is
+excluded from caching. A new warehouse changes the checksum and therefore the ETag.
+
 ## Invariants
 
 1. A response never mixes cutoffs.

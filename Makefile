@@ -1,10 +1,11 @@
 PYTHON ?= python3
 VENV ?= .venv
-PY = $(VENV)/bin/python
-PIP = $(VENV)/bin/pip
+PY ?= $(VENV)/bin/python
+PIP ?= $(VENV)/bin/pip
+UVICORN ?= $(PY) -m uvicorn
 API_PORT ?= 8000
 
-.PHONY: install install-web download warehouse analysis test test-api test-web test-e2e api web build-web report paper clean help
+.PHONY: install install-web download warehouse validate refresh analysis test test-api test-web test-e2e api web build-web report paper clean help
 
 help:
 	@echo "Targets:"
@@ -12,6 +13,8 @@ help:
 	@echo "  install-web    Install the Next.js frontend dependencies"
 	@echo "  download       Download the latest raw CSV"
 	@echo "  warehouse      Build data/processed/detentions.parquet + manifest"
+	@echo "  validate       Validate warehouse + manifest invariants"
+	@echo "  refresh        download + warehouse + validate"
 	@echo "  analysis       Regenerate tables, figures and model metrics"
 	@echo "  test           Run all Python tests"
 	@echo "  api            Run FastAPI on port $(API_PORT)"
@@ -35,6 +38,11 @@ download:
 warehouse:
 	$(PY) pipeline/build_warehouse.py
 
+validate:
+	$(PY) pipeline/validate_warehouse.py
+
+refresh: download warehouse validate
+
 analysis:
 	$(PY) src/analysis.py --input data/raw/colombianos_detenidos.csv
 
@@ -51,7 +59,7 @@ test-e2e:
 	cd apps/web && pnpm test:e2e
 
 api:
-	$(VENV)/bin/uvicorn apps.api.app.main:app --reload --port $(API_PORT)
+	$(UVICORN) apps.api.app.main:app --reload --port $(API_PORT)
 
 web:
 	cd apps/web && pnpm dev

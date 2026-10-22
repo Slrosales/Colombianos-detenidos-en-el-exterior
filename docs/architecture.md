@@ -146,6 +146,8 @@ need the real warehouse. See [`testing.md`](testing.md) for commands and CI guid
 The frontend reads `NEXT_PUBLIC_API_URL`. The API reads `DETENTIONS_PARQUET`,
 `MANIFEST_PATH`, `MODEL_DIR`, `ALLOWED_ORIGINS` and `APP_ENV`.
 
+The full release, data-update and rollback procedure is in [`deployment.md`](deployment.md).
+
 ## Non-goals for v1
 
 - User accounts, comments or forms.

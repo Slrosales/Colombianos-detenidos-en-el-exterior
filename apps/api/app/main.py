@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from .cache import CacheHeadersMiddleware, resolve_dataset_id
 from .config import Settings, settings
 from .db import Database
 from .routers import explore, model
@@ -34,6 +35,11 @@ def create_app(config: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
     )
 
+    # Added first (inner), then CORS (outer) so 304 responses still get CORS headers.
+    app.add_middleware(
+        CacheHeadersMiddleware,
+        dataset=resolve_dataset_id(config.manifest_path, config.parquet_path),
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(config.allowed_origins),

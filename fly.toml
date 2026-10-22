@@ -1,0 +1,36 @@
+# Fly.io configuration for the read-only query API.
+# Change `app` to your own Fly app name before deploying.
+app = "colombianos-detenidos-api"
+primary_region = "mia"
+
+[build]
+  dockerfile = "apps/api/Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  DETENTIONS_PARQUET = "/app/data/processed/detentions.parquet"
+  MANIFEST_PATH = "/app/data/processed/manifest.json"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/api/health"
+
+[[mounts]]
+  source = "detenidos_data"
+  destination = "/app/data"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
