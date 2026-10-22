@@ -120,7 +120,7 @@ export default function MethodologyPage() {
           </a>
           . El corte, los conteos y el manifiesto de datos se muestran en el explorador.
           La lógica reproducible vive en <code>src/</code> y <code>pipeline/</code>; el
-          informe completo está en <code>reports/informe_actualizado_2026.md</code>.
+          informe completo se conserva fuera de este repositorio público.
         </p>
         <p>
           <Link href="/">Volver al explorador</Link> ·{" "}

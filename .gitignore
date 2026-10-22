@@ -1,3 +1,10 @@
+# Private research artifacts (kept locally, not published)
+/lessons/
+/paper/
+/reports/
+/outputs/
+/docs/research-2026.md
+
 # Python
 __pycache__/
 *.py[cod]
@@ -26,8 +33,6 @@ data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
-outputs/models/*
-!outputs/models/.gitkeep
 *.parquet
 *.duckdb
 *.duckdb.wal

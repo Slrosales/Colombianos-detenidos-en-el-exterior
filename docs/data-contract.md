@@ -107,7 +107,8 @@ dashboard controls.
 
 ### `GET /api/model/metrics`
 
-Returns the 2026 ordinal and Random Forest metrics from `outputs/tables/metricas_modelos.csv`.
+Returns the 2026 ordinal and Random Forest metrics when the private
+`outputs/tables/metricas_modelos.csv` artifact exists; otherwise `404`.
 Returns `404` if the research artifacts are missing.
 
 ### `POST /api/model/predict` (phase 4, lab only)

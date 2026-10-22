@@ -98,7 +98,7 @@ flowchart LR
     SRC --> API["apps/api/<br/>FastAPI"]
     PIPE --> API
     API --> WEB["apps/web/<br/>Next.js"]
-    NOTE["notebooks/ + paper/<br/>research only"] -. "no runtime import" .-> WEB
+    NOTE["notebooks/<br/>public research"] -. "no runtime import" .-> WEB
 ```
 
 ## Why a backend at all?
@@ -149,7 +149,8 @@ need the real warehouse. See [`testing.md`](testing.md) for commands and CI guid
 - `apps/api/` may import `src/` and read `data/processed/`.
 - `apps/web/` only talks HTTP and reads static geo assets. It must not import Python.
 - `notebooks/` are research artifacts. New reusable logic goes to `src/` or `pipeline/`.
-- `paper/` and `reports/` are deliverables, not runtime dependencies.
+- Private research deliverables (`lessons/`, `paper/`, `reports/`, `outputs/`) are kept locally
+  and are not runtime dependencies.
 
 ## Environments
 

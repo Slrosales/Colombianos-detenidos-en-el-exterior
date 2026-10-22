@@ -8,9 +8,9 @@ ordinal para explorar la situación jurídica de las personas detenidas. El cort
 en la actualización de 2026 es **2026-10-09** (última fecha de publicación disponible al momento
 de la descarga).
 
-El artículo de investigación independiente está en `paper/paper_2026.tex` y
-`paper/paper_2026.pdf`, con formato IJCAI-11, citas numéricas estilo IEEE y referencias en
-`paper/references.bib`. El informe de trabajo previo se conserva en `reports/Informe_actualizado_2026.pdf`.
+La investigación completa (artículo, informes, material de aprendizaje y salidas generadas) se
+conserva localmente y no forma parte de este repositorio público. Los notebooks originales sí se
+mantienen públicos. Este repositorio publica el sitio web, la API y la documentación técnica.
 
 ## Sitio web interactivo (2026)
 
@@ -29,9 +29,7 @@ El sitio prioriza el **análisis exploratorio**. El modelo ordinal se conserva c
 metodológica y laboratorio de aprendizaje, no como predictor público: su QWK ≈ 0,39 no permite
 evaluar a una persona. La documentación técnica y el TODO por módulo están en
 [`docs/`](docs/README.md) y el despliegue en
-[`docs/deployment.md`](docs/deployment.md). Si eres nuevo en estas tecnologías, empieza por
-[`lessons/`](lessons/README.md): lecciones explicadas desde cero, con diagramas Mermaid y
-ejercicios.
+[`docs/deployment.md`](docs/deployment.md).
 
 ```bash
 make install          # dependencias Python
@@ -82,7 +80,6 @@ detenidos queda sin país identificado.
 ├── requirements-dev.txt
 ├── .github/workflows/            # CI y actualización programada de datos
 ├── docs/                         # Arquitectura, datos, testing, despliegue y roadmap
-├── lessons/                      # Lecciones para aprender el stack desde cero
 ├── config/
 │   ├── consulado_a_pais.json
 │   └── params.json
@@ -101,17 +98,6 @@ detenidos queda sin país identificado.
 │   ├── Colombianos_detenidos_en_el_exterior.ipynb
 │   ├── ML_Colombianos_detenidos.ipynb
 │   └── 03_modelo_ordinal.ipynb
-├── reports/                      # Informes y presentación
-│   ├── Informe del análisis exploratorio.pdf   # original 2021
-│   ├── Presentación.pdf                         # original
-│   ├── informe_actualizado_2026.md
-│   └── Informe_actualizado_2026.pdf
-├── paper/                        # Artículo LaTeX independiente
-│   ├── README.md
-│   ├── paper_2026.tex
-│   ├── paper_2026.pdf
-│   ├── ijcai11.sty
-│   └── references.bib
 ├── scripts/
 │   └── download_data.py
 ├── src/                          # Limpieza y análisis reutilizable (2026)
@@ -120,21 +106,16 @@ detenidos queda sin país identificado.
 ├── tests/
 │   ├── test_cleaning.py
 │   └── test_model.py
-├── artifacts/                    # Modelos serializados (ignorados por git)
-└── outputs/
-    ├── figures/
-    ├── models/
-    └── tables/
+└── artifacts/                    # Modelos serializados (ignorados por git)
 ```
 
-Los notebooks y PDFs originales se conservan en `notebooks/` y `reports/`. No fueron eliminados;
-solo se movieron para separar código, datos y entregables.
+Los artefactos de investigación (`lessons/`, `paper/`, `reports/` y `outputs/`) se mantienen
+locales y están ignorados por Git. No forman parte del repositorio público.
 
-Los archivos `.gitkeep` de `data/raw/`, `data/processed/` y `outputs/models/` no son datos: son
-marcadores vacíos para que Git conserve esos directorios, porque Git no versiona carpetas vacías.
-Los notebooks siguen siendo parte del proyecto: `notebooks/03_modelo_ordinal.ipynb` es la
-interfaz de análisis actualizada y los dos notebooks anteriores se conservan como registro. La
-lógica reutilizable y testeada vive en `src/`, para que los notebooks no dupliquen código.
+Los notebooks originales se conservan en `notebooks/` y siguen siendo parte del proyecto.
+`notebooks/03_modelo_ordinal.ipynb` es la interfaz de análisis actualizada y los dos notebooks
+anteriores se conservan como registro. La lógica reutilizable y testeada vive en `src/`, para que
+los notebooks no dupliquen código.
 
 ## Resultados principales (corte 2026-10-09)
 
@@ -177,7 +158,7 @@ gravedad del delito.
 
 ## Cómo ejecutar
 
-Requisitos: Python 3.10+, Node 20+ y pnpm. Para generar los PDF, Pandoc y LaTeX (pdflatex).
+Requisitos: Python 3.10+, Node 20+ y pnpm.
 
 ### Análisis y web
 
@@ -215,13 +196,6 @@ make test-e2e         # Playwright: mapa, URL y filtros con API simulada
 El detalle de cada capa y la recomendación para CI están en
 [`docs/testing.md`](docs/testing.md).
 
-### Investigación y PDF
-
-```bash
-make report           # informe de trabajo
-make paper            # artículo LaTeX + BibTeX
-```
-
 También se puede usar un archivo ya descargado:
 
 ```bash
@@ -253,19 +227,12 @@ frontend (`NEXT_PUBLIC_API_URL`). En desarrollo, los valores por defecto apuntan
 
 ## Entregables
 
-- `paper/paper_2026.pdf` — artículo de investigación en formato IJCAI-11 a dos columnas, con citas numéricas.
-- `paper/paper_2026.tex` — fuente LaTeX editable del artículo.
-- `paper/references.bib` — referencias BibTeX del artículo.
-- `reports/ijcai11.sty` — estilo de conferencia usado por el artículo.
-- `reports/Informe_actualizado_2026.pdf` — informe de trabajo con el corte de 2026.
-- `reports/informe_actualizado_2026.md` — fuente editable del informe.
-- `reports/Informe del análisis exploratorio.pdf` — informe original de 2021.
-- `reports/Presentación.pdf` — presentación original.
-- `outputs/tables/` — tablas reproducibles del análisis.
-- `outputs/figures/` — figuras del informe actualizado.
-- `apps/web/` — explorador interactivo (Next.js + MapLibre).
+- `apps/web/` — explorador interactivo (Next.js + MapLibre + ECharts).
+- `apps/web/public/data/demo/` — JSON precomputado para la demo estática.
 - `apps/api/` — API de consultas en vivo (FastAPI + DuckDB).
-- `docs/` — arquitectura, contrato de datos, decisiones y TODO por módulo.
+- `docs/` — arquitectura, contrato de datos, testing, despliegue y roadmap.
+- `notebooks/` — notebooks originales y de análisis.
+- `pipeline/` — construcción y validación del warehouse.
 
 ## Fuente y cita
 

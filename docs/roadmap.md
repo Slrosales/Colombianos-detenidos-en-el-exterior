@@ -19,7 +19,6 @@ flowchart LR
 - [x] Next.js dashboard with MapLibre choropleth and live filters.
 - [x] Methodology page and model metrics page.
 - [x] Make targets, environment examples and tests.
-- [x] Beginner lessons in `lessons/` with Mermaid diagrams.
 - [x] Harden `.gitignore` for Python, Node, data, secrets and build outputs.
 
 ## Phase 1 — Explore v1 polish
